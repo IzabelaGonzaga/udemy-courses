@@ -120,13 +120,21 @@ console.log(usuario);
 
 //Resolução
 
-let funcionario: {
+//tipos personalizados (alias)
+type Funcionario = {
     supervisores: string[],
     baterPonto: (horas: number) => string
 };
 
-funcionario = {
+let funcionario: Funcionario = {
     supervisores: ['Ana', 'Carlos', 'Maria'],
+    baterPonto(horario: number): string  {
+        return horario <= 8 ? 'Ponto normal.' : 'Fora do horário.';
+    }
+};
+
+let funcionario2: Funcionario = {
+    supervisores: ['Beatriz', 'Lucas', 'Mariana'],
     baterPonto(horario: number): string  {
         return horario <= 8 ? 'Ponto normal.' : 'Fora do horário.';
     }
@@ -137,4 +145,92 @@ console.log(funcionario.baterPonto(7));
 console.log(funcionario.baterPonto(8));
 console.log(funcionario.baterPonto(9));
 
+//Union Types
+let nota: number | string = 10;
+console.log(`Minha nota é ${nota}!`);
 
+nota = '10';
+console.log(`Minha nota é ${nota}!`);
+
+//Checando tipos (como seria sem o ts, no js)
+let valor = 30;
+
+if (typeof valor === 'number') {
+    console.log('É um number!');
+} else {
+    console.log(typeof valor);
+}
+
+//never
+function falha(msg: string): never{
+    throw new Error(msg);
+}
+
+const produto = {
+    nome: 'Sabão',
+    preco: 4,
+    validarProduto(){
+        if(!this.nome || this.nome.trim().length == 0) {
+            falha('Precisa ter um nome');
+        }
+        if(this.preco < 0) {
+            falha('Preço inválido!');
+        }
+    }
+};
+
+produto.validarProduto();
+
+//ultizando valores com tipo null
+let altura = 12;
+// altura = null;
+
+let alturaOpcional: null | number = 12;
+alturaOpcional = null;
+
+type Contato = {
+    nome: string,
+    tel1: string,
+    tel2: string | null
+};
+
+const contato1: Contato = {
+    nome: 'Fulano',
+    tel1: '98765432',
+    tel2: null
+};
+
+console.log(contato1.nome);
+console.log(contato1.tel1);
+console.log(contato1.tel2);
+
+//Desafio
+/* Transformando código JS em TS */
+
+//Resolução
+type ContaBancaria = {
+    saldo: number,
+    depositar: (valor: number) => void
+}
+
+let contaBancaria: ContaBancaria = {
+    saldo: 3456,
+    depositar(valor: number): void {
+        this.saldo += valor
+    }
+}
+
+type Correntista = {
+    nome: string,
+    contaBancaria: ContaBancaria,
+    contatos: string[]
+}
+ 
+let correntista: Correntista = {
+    nome: 'Ana Silva',
+    contaBancaria: contaBancaria,
+    contatos: ['34567890', '98765432']
+}
+ 
+correntista.contaBancaria.depositar(3000);
+console.log(correntista);
